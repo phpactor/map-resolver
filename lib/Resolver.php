@@ -7,52 +7,98 @@ use Closure;
 class Resolver
 {
     /**
-     * @var array
+     * @var array<string>
      */
     private $required = [];
 
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     private $defaults = [];
 
     /**
-     * @var array
+     * @var array<string,string>
      */
     private $types = [];
 
     /**
-     * @var array
+     * @var array<string,callable>
      */
     private $callbacks = [];
 
-    public function setCallback(string $field, Closure $callable)
+    /**
+     * @var array<string,string>
+     */
+    private $descriptions = [];
+
+    public function setCallback(string $field, Closure $callable): void
     {
         $this->callbacks[$field] = $callable;
     }
 
-    public function setRequired(array $fields)
+    /**
+     * @param array<string> $fields
+     */
+    public function setRequired(array $fields): void
     {
         $this->required = array_merge($this->required, $fields);
     }
 
-    public function setDefaults(array $defaults)
+    /**
+     * @param array<string,string> $defaults
+     */
+    public function setDefaults(array $defaults): void
     {
         $this->defaults = array_merge($this->defaults, $defaults);
     }
 
-    public function setTypes(array $typeMap)
+    /**
+     * @param array<string,string> $typeMap
+     */
+    public function setTypes(array $typeMap): void
     {
         $this->types = $typeMap;
     }
 
-    public function resolve(array $config)
+    /**
+     * @param array<string,string> $descriptions
+     */
+    public function setDescriptions(array $descriptions): void
     {
-        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
+        $this->descriptions = $descriptions;
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    public function resolveDescriptions(): array
+    {
+        $keys = $this->resolveAllowedKeys();
+        return (array)array_combine($keys, array_map(function (string $key) {
+            return $this->descriptions[$key] ?? null;
+        }, $keys));
+    }
+
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array<string,mixed>
+     */
+    public function resolve(array $config): array
+    {
+        $allowedKeys = $this->resolveAllowedKeys();
 
         if ($diff = array_diff(array_keys($config), $allowedKeys)) {
             throw new InvalidMap(sprintf(
                 'Key(s) "%s" are not known, known keys: "%s"',
+                implode('", "', ($diff)),
+                implode('", "', $allowedKeys)
+            ));
+        }
+
+        if ($diff = array_diff(array_keys($this->descriptions), $allowedKeys)) {
+            throw new InvalidMap(sprintf(
+                'Description(s) for key(s) "%s" are not known, known keys: "%s"',
                 implode('", "', ($diff)),
                 implode('", "', $allowedKeys)
             ));
@@ -123,5 +169,14 @@ class Resolver
         }
 
         return $this;
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function resolveAllowedKeys(): array
+    {
+        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
+        return $allowedKeys;
     }
 }

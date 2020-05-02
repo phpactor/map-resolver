@@ -91,4 +91,39 @@ class ResolverTest extends TestCase
         $config = $resolver->resolve([]);
         $this->assertEquals('hello', $config['bar']);
     }
+
+    public function testThrowsExceptionOnUnknownDescriptions()
+    {
+        $this->expectException(InvalidMap::class);
+        $this->expectExceptionMessage('Description(s) for key(s) "four" are not known');
+
+        $resolver = new Resolver();
+        $resolver->setDefaults([
+            'two' => 2,
+        ]);
+        $resolver->setDescriptions([
+            'two' => 'three',
+            'four' => 'five',
+        ]);
+        $resolver->resolve(['two' => 3]);
+    }
+
+    public function testResolvesDescriptions()
+    {
+        $resolver = new Resolver();
+        $resolver->setDefaults([
+            'two' => 2,
+            'three' => null,
+            'four' => 4,
+        ]);
+        $resolver->setDescriptions([
+            'two' => 'Two is the number',
+            'four' => 'Four is also a number',
+        ]);
+        self::assertEquals([
+            'two' => 'Two is the number',
+            'four' => 'Four is also a number',
+            'three' => null,
+        ], $resolver->resolveDescriptions());
+    }
 }
