@@ -10,7 +10,6 @@
         }
     ],
     "autoload": {
-        "php": "^7.3",
         "psr-4": {
             "Phpactor\\MapResolver\\": "lib/"
         }
@@ -19,6 +18,9 @@
         "psr-4": {
             "Phpactor\\MapResolver\\Tests\\": "tests/"
         }
+    },
+    "require": {
+        "php": "^7.3"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12.0",
