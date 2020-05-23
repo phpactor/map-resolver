@@ -45,7 +45,7 @@ class Resolver
     }
 
     /**
-     * @param array<string,string> $defaults
+     * @param array<string,mixed> $defaults
      */
     public function setDefaults(array $defaults): void
     {
@@ -178,5 +178,22 @@ class Resolver
     {
         $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
         return $allowedKeys;
+    }
+
+    public function definitions(): Definitions
+    {
+        $definitions = [];
+
+        foreach ($this->resolveAllowedKeys() as $key) {
+            $definitions[] = new Definition(
+                $key,
+                $this->defaults[$key] ?? null,
+                in_array($key, $this->required),
+                $this->descriptions[$key] ?? null,
+                isset($this->types[$key]) ? [$this->types[$key]] : []
+            );
+        }
+
+        return new Definitions($definitions);
     }
 }

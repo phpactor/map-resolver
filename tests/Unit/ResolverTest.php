@@ -1,8 +1,9 @@
 <?php
 
-namespace Phpactor\MapResolver\Tests;
+namespace Phpactor\MapResolver\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Phpactor\MapResolver\Definition;
 use Phpactor\MapResolver\InvalidMap;
 use Phpactor\MapResolver\Resolver;
 use stdClass;
@@ -125,5 +126,35 @@ class ResolverTest extends TestCase
             'four' => 'Four is also a number',
             'three' => null,
         ], $resolver->resolveDescriptions());
+    }
+
+    public function testReturnsDefinition(): void
+    {
+        $resolver = new Resolver();
+        $resolver->setDefaults([
+            'two' => 2,
+            'four' => 'hello',
+        ]);
+        $resolver->setRequired([
+            'two'
+        ]);
+        $resolver->setDescriptions([
+            'two' => 'The number two',
+        ]);
+        $resolver->setTypes([
+            'two' => 'int',
+        ]);
+
+        $definitions = $resolver->definitions();
+
+        self::assertEquals(
+            new Definition('two', 2, true, 'The number two', ['int']),
+            $definitions->get('two')
+        );
+
+        self::assertEquals(
+            new Definition('four', 'hello', false, null, []),
+            $definitions->get('four')
+        );
     }
 }
