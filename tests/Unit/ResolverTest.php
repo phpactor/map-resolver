@@ -10,7 +10,7 @@ use stdClass;
 
 class ResolverTest extends TestCase
 {
-    public function testSetsDefaults()
+    public function testSetsDefaults(): void
     {
         $resolver = new Resolver();
         $resolver->setDefaults([
@@ -20,7 +20,7 @@ class ResolverTest extends TestCase
         $this->assertEquals(['one' => 1, 'two' => 2], $resolver->resolve([]));
     }
 
-    public function testThrowsExceptionOnUnknownKey()
+    public function testThrowsExceptionOnUnknownKey(): void
     {
         $this->expectException(InvalidMap::class);
         $this->expectExceptionMessage('Key(s) "three" are not known');
@@ -33,7 +33,7 @@ class ResolverTest extends TestCase
         $resolver->resolve(['three' => 3]);
     }
 
-    public function testMergesDefaults()
+    public function testMergesDefaults(): void
     {
         $resolver = new Resolver();
         $resolver->setDefaults([
@@ -43,7 +43,7 @@ class ResolverTest extends TestCase
         $this->assertEquals(['one' => 5, 'two' => 2], $resolver->resolve(['one' => 5]));
     }
 
-    public function testSettingDefaultsMultipleTimesMerges()
+    public function testSettingDefaultsMultipleTimesMerges(): void
     {
         $resolver = new Resolver();
         $resolver->setDefaults([
@@ -56,7 +56,7 @@ class ResolverTest extends TestCase
         $this->assertEquals(['one' => 3, 'two' => 2], $resolver->resolve([]));
     }
 
-    public function testThrowsExceptionOnMissingRequiredKeys()
+    public function testThrowsExceptionOnMissingRequiredKeys(): void
     {
         $this->expectException(InvalidMap::class);
         $this->expectExceptionMessage('Key(s) "one" are required');
@@ -69,7 +69,7 @@ class ResolverTest extends TestCase
         $resolver->resolve(['two' => 3]);
     }
 
-    public function testCallingRequiredMultipleTimesMergesRequiredKeys()
+    public function testCallingRequiredMultipleTimesMergesRequiredKeys(): void
     {
         $resolver = new Resolver();
         $resolver->setRequired(['one']);
@@ -78,7 +78,7 @@ class ResolverTest extends TestCase
         $this->assertEquals(['one' => 1, 'two' => 3], $result);
     }
 
-    public function testThrowsExceptionOnInvalidType()
+    public function testThrowsExceptionOnInvalidType(): void
     {
         $this->expectException(InvalidMap::class);
         $this->expectExceptionMessage('Type for "one" expected to be "string", got "stdClass"');
@@ -91,7 +91,7 @@ class ResolverTest extends TestCase
         $resolver->resolve(['one' => new stdClass]);
     }
 
-    public function testCallback()
+    public function testCallback(): void
     {
         $resolver = new Resolver();
         $resolver->setDefaults([
@@ -106,7 +106,7 @@ class ResolverTest extends TestCase
         $this->assertEquals('hello', $config['bar']);
     }
 
-    public function testThrowsExceptionOnUnknownDescriptions()
+    public function testThrowsExceptionOnUnknownDescriptions(): void
     {
         $this->expectException(InvalidMap::class);
         $this->expectExceptionMessage('Description(s) for key(s) "four" are not known');
@@ -122,7 +122,7 @@ class ResolverTest extends TestCase
         $resolver->resolve(['two' => 3]);
     }
 
-    public function testResolvesDescriptions()
+    public function testResolvesDescriptions(): void
     {
         $resolver = new Resolver();
         $resolver->setDefaults([
