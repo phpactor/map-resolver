@@ -27,11 +27,6 @@ class Definitions implements IteratorAggregate
         }
     }
 
-    private function add(Definition $definition): void
-    {
-        $this->definitions[$definition->name()] = $definition;
-    }
-
     /**
      * @return Iterator<Definition>
      */
@@ -50,5 +45,10 @@ class Definitions implements IteratorAggregate
         }
 
         return $this->definitions[$name];
+    }
+
+    private function add(Definition $definition): void
+    {
+        $this->definitions[$definition->name()] = $definition;
     }
 }

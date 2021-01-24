@@ -171,15 +171,6 @@ class Resolver
         return $this;
     }
 
-    /**
-     * @return array<string>
-     */
-    private function resolveAllowedKeys(): array
-    {
-        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
-        return $allowedKeys;
-    }
-
     public function definitions(): Definitions
     {
         $definitions = [];
@@ -195,5 +186,14 @@ class Resolver
         }
 
         return new Definitions($definitions);
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function resolveAllowedKeys(): array
+    {
+        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
+        return $allowedKeys;
     }
 }
