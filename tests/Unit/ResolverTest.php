@@ -33,6 +33,20 @@ class ResolverTest extends TestCase
         $resolver->resolve(['three' => 3]);
     }
 
+    public function testIgnoresUnknownKey(): void
+    {
+        $resolver = new Resolver(true);
+        $resolver->setDefaults([
+            'one' => 1,
+            'two' => 2,
+        ]);
+        $result = $resolver->resolve(['three' => 3]);
+        self::assertEquals([
+            'one' => 1,
+            'two' => 2
+        ]);
+    }
+
     public function testMergesDefaults(): void
     {
         $resolver = new Resolver();

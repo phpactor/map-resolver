@@ -31,6 +31,16 @@ class Resolver
      */
     private $descriptions = [];
 
+    /**
+     * @var bool
+     */
+    private $ignoreErrors;
+
+    public function __construct(bool $ignoreErrors = false)
+    {
+        $this->ignoreErrors = $ignoreErrors;
+    }
+
     public function setCallback(string $field, Closure $callable): void
     {
         $this->callbacks[$field] = $callable;
@@ -171,6 +181,15 @@ class Resolver
         return $this;
     }
 
+    /**
+     * @return array<string>
+     */
+    private function resolveAllowedKeys(): array
+    {
+        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
+        return $allowedKeys;
+    }
+
     public function definitions(): Definitions
     {
         $definitions = [];
@@ -186,14 +205,5 @@ class Resolver
         }
 
         return new Definitions($definitions);
-    }
-
-    /**
-     * @return array<string>
-     */
-    private function resolveAllowedKeys(): array
-    {
-        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
-        return $allowedKeys;
     }
 }
