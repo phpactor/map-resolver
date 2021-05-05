@@ -36,6 +36,11 @@ class Resolver
      */
     private $ignoreErrors;
 
+    /**
+     * @var InvalidMap[]
+     */
+    private $errors;
+
     public function __construct(bool $ignoreErrors = false)
     {
         $this->ignoreErrors = $ignoreErrors;
@@ -99,11 +104,15 @@ class Resolver
         $allowedKeys = $this->resolveAllowedKeys();
 
         if ($diff = array_diff(array_keys($config), $allowedKeys)) {
-            throw new InvalidMap(sprintf(
-                'Key(s) "%s" are not known, known keys: "%s"',
-                implode('", "', ($diff)),
-                implode('", "', $allowedKeys)
-            ));
+            $this->throwOrLogError(
+                new InvalidMap(sprintf(
+                    'Key(s) "%s" are not known, known keys: "%s"',
+                    implode('", "', ($diff)),
+                    implode('", "', $allowedKeys)
+                ))
+            );
+
+            $config = $this->removeKeys($config, $diff);
         }
 
         if ($diff = array_diff(array_keys($this->descriptions), $allowedKeys)) {
@@ -117,10 +126,11 @@ class Resolver
         $config = array_merge($this->defaults, $config);
 
         if ($diff = array_diff($this->required, array_keys($config))) {
-            throw new InvalidMap(sprintf(
+            $this->throwOrLogError(new InvalidMap(sprintf(
                 'Key(s) "%s" are required',
                 implode('", "', $diff)
-            ));
+            )));
+            $config = $this->removeKeys($config, $diff);
         }
 
         foreach ($config as $key => $value) {
@@ -139,12 +149,12 @@ class Resolver
                 }
 
                 if (false === $valid) {
-                    throw new InvalidMap(sprintf(
+                    $this->throwOrLogError(new InvalidMap(sprintf(
                         'Type for "%s" expected to be "%s", got "%s"',
                         $key,
                         $this->types[$key],
                         $type
-                    ));
+                    )));
                 }
             }
         }
@@ -205,5 +215,23 @@ class Resolver
         }
 
         return new Definitions($definitions);
+    }
+
+    private function throwOrLogError(InvalidMap $error): void
+    {
+        if (!$this->ignoreErrors) {
+            throw $error;
+        }
+
+        $this->errors[] = $error;
+    }
+
+    private function removeKeys(array $config, array $keys): array
+    {
+        foreach ($keys as $remove) {
+            unset($config[$remove]);
+        }
+
+        return $config;
     }
 }

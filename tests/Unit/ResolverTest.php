@@ -41,7 +41,7 @@ class ResolverTest extends TestCase
             'two' => 2,
         ]);
         $result = $resolver->resolve(['three' => 3]);
-        self::assertEquals([
+        self::assertEquals($result, [
             'one' => 1,
             'two' => 2
         ]);
