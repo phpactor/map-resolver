@@ -39,7 +39,7 @@ class Resolver
     /**
      * @var InvalidMap[]
      */
-    private $errors;
+    private $errors = [];
 
     public function __construct(bool $ignoreErrors = false)
     {
