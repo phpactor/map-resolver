@@ -126,11 +126,10 @@ class Resolver
         $config = array_merge($this->defaults, $config);
 
         if ($diff = array_diff($this->required, array_keys($config))) {
-            $this->throwOrLogError(new InvalidMap(sprintf(
+            throw new InvalidMap(sprintf(
                 'Key(s) "%s" are required',
                 implode('", "', $diff)
-            )));
-            $config = $this->removeKeys($config, $diff);
+            ));
         }
 
         foreach ($config as $key => $value) {
@@ -149,12 +148,12 @@ class Resolver
                 }
 
                 if (false === $valid) {
-                    $this->throwOrLogError(new InvalidMap(sprintf(
+                    throw new InvalidMap(sprintf(
                         'Type for "%s" expected to be "%s", got "%s"',
                         $key,
                         $this->types[$key],
                         $type
-                    )));
+                    ));
                 }
             }
         }
@@ -233,5 +232,13 @@ class Resolver
         }
 
         return $config;
+    }
+
+    /**
+     * @return InvalidMap[]
+     */
+    public function errors(): array
+    {
+        return $this->errors;
     }
 }

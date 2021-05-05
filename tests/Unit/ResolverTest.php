@@ -45,6 +45,7 @@ class ResolverTest extends TestCase
             'one' => 1,
             'two' => 2
         ]);
+        self::assertCount(1, $resolver->errors());
     }
 
     public function testMergesDefaults(): void
