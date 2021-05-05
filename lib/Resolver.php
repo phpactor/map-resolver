@@ -190,15 +190,6 @@ class Resolver
         return $this;
     }
 
-    /**
-     * @return array<string>
-     */
-    private function resolveAllowedKeys(): array
-    {
-        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
-        return $allowedKeys;
-    }
-
     public function definitions(): Definitions
     {
         $definitions = [];
@@ -216,6 +207,20 @@ class Resolver
         return new Definitions($definitions);
     }
 
+    public function errors(): ResolverErrors
+    {
+        return new ResolverErrors($this->errors);
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function resolveAllowedKeys(): array
+    {
+        $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
+        return $allowedKeys;
+    }
+
     private function throwOrLogError(InvalidMap $error): void
     {
         if (!$this->ignoreErrors) {
@@ -225,6 +230,11 @@ class Resolver
         $this->errors[] = $error;
     }
 
+    /**
+     * @param array<string,mixed> $config
+     * @param string[] $keys
+     * @return array<string,mixed> $config
+     */
     private function removeKeys(array $config, array $keys): array
     {
         foreach ($keys as $remove) {
@@ -232,13 +242,5 @@ class Resolver
         }
 
         return $config;
-    }
-
-    /**
-     * @return InvalidMap[]
-     */
-    public function errors(): array
-    {
-        return $this->errors;
     }
 }
