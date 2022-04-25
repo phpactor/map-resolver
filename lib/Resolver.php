@@ -32,6 +32,11 @@ class Resolver
     private $descriptions = [];
 
     /**
+     * @var array<string,array<int,mixed>>
+     */
+    private $enums = [];
+
+    /**
      * @var bool
      */
     private $ignoreErrors;
@@ -65,6 +70,14 @@ class Resolver
     public function setDefaults(array $defaults): void
     {
         $this->defaults = array_merge($this->defaults, $defaults);
+    }
+
+    /**
+     * @param array<string,array<int,mixed>> $enums
+     */
+    public function setEnums(array $enums): void
+    {
+        $this->enums = $enums;
     }
 
     /**
@@ -200,7 +213,8 @@ class Resolver
                 $this->defaults[$key] ?? null,
                 in_array($key, $this->required),
                 $this->descriptions[$key] ?? null,
-                isset($this->types[$key]) ? [$this->types[$key]] : []
+                isset($this->types[$key]) ? [$this->types[$key]] : [],
+                $this->enums[$key] ?? [],
             );
         }
 
