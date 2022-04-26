@@ -25,6 +25,11 @@ class Definition
     private $types;
 
     /**
+     * @var array<mixed>
+     */
+    private array $enum = [];
+
+    /**
      * @var string|null
      */
     private $description;
@@ -32,14 +37,16 @@ class Definition
     /**
      * @param mixed $defaultValue
      * @param array<string> $types
+     * @param array<mixed> $enum
      */
-    public function __construct(string $name, $defaultValue, bool $required, ?string $description, array $types)
+    public function __construct(string $name, $defaultValue, bool $required, ?string $description, array $types, array $enum)
     {
         $this->name = $name;
         $this->defaultValue = $defaultValue;
         $this->required = $required;
         $this->types = $types;
         $this->description = $description;
+        $this->enum = $enum;
     }
 
     /**
@@ -61,6 +68,14 @@ class Definition
     public function defaultValue()
     {
         return $this->defaultValue;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function enum(): array
+    {
+        return $this->enum;
     }
 
     public function name(): string

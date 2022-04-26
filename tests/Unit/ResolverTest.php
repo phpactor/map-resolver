@@ -172,16 +172,17 @@ class ResolverTest extends TestCase
         $resolver->setTypes([
             'two' => 'int',
         ]);
+        $resolver->setEnums(['two' => [2]]);
 
         $definitions = $resolver->definitions();
 
         self::assertEquals(
-            new Definition('two', 2, true, 'The number two', ['int']),
+            new Definition('two', 2, true, 'The number two', ['int'], [2]),
             $definitions->get('two')
         );
 
         self::assertEquals(
-            new Definition('four', 'hello', false, null, []),
+            new Definition('four', 'hello', false, null, [], []),
             $definitions->get('four')
         );
     }
