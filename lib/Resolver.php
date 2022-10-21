@@ -77,15 +77,15 @@ class Resolver
      */
     public function setEnums(array $enums): void
     {
-        $this->enums = $enums;
+        $this->enums = array_merge($this->enums, $enums);
     }
 
     /**
-     * @param array<string,string> $typeMap
+     * @param array<string,string> $types
      */
-    public function setTypes(array $typeMap): void
+    public function setTypes(array $types): void
     {
-        $this->types = $typeMap;
+        $this->types = array_merge($this->types, $types);
     }
 
     /**
@@ -93,7 +93,7 @@ class Resolver
      */
     public function setDescriptions(array $descriptions): void
     {
-        $this->descriptions = $descriptions;
+        $this->descriptions = array_merge($this->descriptions, $descriptions);
     }
 
     /**

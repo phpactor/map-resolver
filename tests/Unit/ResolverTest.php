@@ -144,16 +144,60 @@ class ResolverTest extends TestCase
             'two' => 2,
             'three' => null,
             'four' => 4,
+            'five' => 4,
         ]);
         $resolver->setDescriptions([
             'two' => 'Two is the number',
             'four' => 'Four is also a number',
         ]);
+        $resolver->setDescriptions([
+            'five' => 'Five is the number',
+        ]);
         self::assertEquals([
             'two' => 'Two is the number',
             'four' => 'Four is also a number',
             'three' => null,
+            'five' => 'Five is the number',
         ], $resolver->resolveDescriptions());
+    }
+
+    public function testResolvesEnums(): void
+    {
+        $resolver = new Resolver();
+        $resolver->setDefaults([
+            'two' => 2,
+        ]);
+        $resolver->setEnums([
+            'two' => [2],
+        ]);
+        $resolver->setEnums([
+            'two' => [2, 3],
+        ]);
+        self::assertEquals([
+            2,
+            3,
+        ], $resolver->definitions()->get('two')->enum());
+    }
+
+    public function testExceptionOnInvalidTypeAfterMerge(): void
+    {
+        $this->expectException(InvalidMap::class);
+        $this->expectExceptionMessage('got "NULL"');
+        $resolver = new Resolver();
+        $resolver->setDefaults([
+            'two' => 2,
+            'three' => null,
+        ]);
+        $resolver->setTypes([
+            'two' => 'integer',
+        ]);
+        $resolver->setTypes([
+            'three' => 'int',
+        ]);
+        self::assertEquals([
+            'two' => 2,
+            'three' => null,
+        ], $resolver->resolve([]));
     }
 
     public function testReturnsDefinition(): void
