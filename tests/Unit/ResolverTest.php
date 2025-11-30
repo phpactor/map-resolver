@@ -27,12 +27,12 @@ class ResolverTest extends TestCase
         $this->expectExceptionMessage('Key(s) "three" are not known');
 
         try {
-        $resolver = new Resolver();
-        $resolver->setDefaults([
-            'one' => 1,
-            'two' => 2,
-        ]);
-        $resolver->resolve(['three' => 3]);
+            $resolver = new Resolver();
+            $resolver->setDefaults([
+                'one' => 1,
+                'two' => 2,
+            ]);
+            $resolver->resolve(['three' => 3]);
         } catch (UnknownKeys $e) {
             self::assertEquals(['three'], $e->additionalKeys());
             self::assertEquals(['one', 'two'], $e->allowedKeys());

@@ -2,7 +2,6 @@
 
 namespace Phpactor\MapResolver;
 
-
 class UnknownKeys extends InvalidMap
 {
     /**
