@@ -5,6 +5,7 @@ namespace Phpactor\MapResolver\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Phpactor\MapResolver\Definition;
 use Phpactor\MapResolver\InvalidMap;
+use Phpactor\MapResolver\UnknownKeys;
 use Phpactor\MapResolver\Resolver;
 use stdClass;
 
@@ -25,12 +26,18 @@ class ResolverTest extends TestCase
         $this->expectException(InvalidMap::class);
         $this->expectExceptionMessage('Key(s) "three" are not known');
 
+        try {
         $resolver = new Resolver();
         $resolver->setDefaults([
             'one' => 1,
             'two' => 2,
         ]);
         $resolver->resolve(['three' => 3]);
+        } catch (UnknownKeys $e) {
+            self::assertEquals(['three'], $e->additionalKeys());
+            self::assertEquals(['one', 'two'], $e->allowedKeys());
+            throw $e;
+        }
     }
 
     public function testIgnoresUnknownKey(): void
