@@ -118,11 +118,7 @@ class Resolver
 
         if ($diff = array_diff(array_keys($config), $allowedKeys)) {
             $this->throwOrLogError(
-                new InvalidMap(sprintf(
-                    'Key(s) "%s" are not known, known keys: "%s"',
-                    implode('", "', ($diff)),
-                    implode('", "', $allowedKeys)
-                ))
+                UnknownKeys::fromKeysAndAllowedKeys(array_values($diff), $allowedKeys)
             );
 
             $config = $this->removeKeys($config, $diff);
@@ -227,12 +223,12 @@ class Resolver
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     private function resolveAllowedKeys(): array
     {
         $allowedKeys = array_merge(array_keys($this->defaults), $this->required);
-        return $allowedKeys;
+        return array_values($allowedKeys);
     }
 
     private function throwOrLogError(InvalidMap $error): void
